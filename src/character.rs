@@ -1,3 +1,27 @@
+/// # Character
+///
+/// Originally, there were two python classes: `Heroes`
+/// and `Monster`. However there were extremely similar
+/// and not very useful, so they were merged into a
+/// single struct nammed `Character`.
+///
+/// It consists of:
+/// - `life`    as unsigned 8-bit integer
+/// - `damage`  as unsigned 8-bit integer
+/// - `mana`    as unsigned 8-bit integer
+/// - `name`    as rodata str (string stored in
+/// read-only memory)
+///  
+/// It also provides the following methods:
+/// - `new(u8, u8, u8, &'static str)` function is used
+/// to be a static constructor of `Character` that return
+/// the struct initialized.
+/// - `attack(&mut self, &mut self)` function removes
+/// other's life based on self damage and return self
+/// for method chaining.
+/// - `comsume_mana(&mut self, u8)` function reduces mana
+/// with the `u8` second parameter.
+/// - `get_name` is only an accessor of `name`
 pub struct Character {
     life: u8,
     damage: u8,
@@ -6,6 +30,9 @@ pub struct Character {
 }
 
 impl Character {
+    /// Creates a new `Character` with the given attributes.
+    /// Acts as a "static constructor" returning the
+    /// initialized struct.
     pub fn new(life: u8, damage: u8, mana: u8, name: &'static str) -> Self {
         Character {
             life,
@@ -15,16 +42,20 @@ impl Character {
         }
     }
 
+    /// Attacks another character, reducing their `life` by
+    /// self.damage. Returns `self` to allow method chaining.
     pub fn attack(&mut self, other: &mut Self) -> &mut Self {
         other.life -= self.damage;
         self
     }
 
+    /// Consumes `consumption` amount of mana.
+    /// Returns `self` to allow method chaining.
     pub fn consume_mana(&mut self, consumption: u8) -> &mut Self {
         self.mana -= consumption;
         self
     }
-
+    /// Returns the character's name.
     pub fn get_name(&self) -> &str {
         self.name
     }
