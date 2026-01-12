@@ -66,6 +66,7 @@ mod tests {
     use super::*;
 
     #[test]
+    /// Tests that a character is correctly initialized.
     fn character_build() {
         let c = Character::new(10, 5, 3, "test1");
         assert_eq!(c.life, 10);
@@ -75,6 +76,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests that attacking reduces the target's life correctly.
     fn character_attack() {
         let mut c1 = Character::new(10, 3, 5, "test1");
         let mut c2 = Character::new(10, 2, 5, "test2");
@@ -86,6 +88,7 @@ mod tests {
     }
 
     #[test]
+    /// Tests that consuming mana reduces it correctly.
     fn character_mana() {
         let mut c = Character::new(10, 3, 15, "test1");
         c.consume_mana(10);
@@ -93,6 +96,8 @@ mod tests {
     }
 
     #[test]
+    /// Tests method chaining: attack -> consume mana 
+    /// -> attack.
     fn character_chaining() {
         let mut c1 = Character::new(10, 3, 15, "test1");
         let mut c2 = Character::new(10, 2, 15, "test2");
