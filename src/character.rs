@@ -9,16 +9,16 @@ use crate::weapon::Weapon;
 ///
 /// It consists of:
 /// - `life`    as unsigned 8-bit integer
-/// - `weapon`  as Option heap weapon struct
+/// - `weapon`  as an Option heap weapon struct
 /// - `name`    as rodata str (string stored in
 /// read-only memory)
 ///  
 /// It also provides the following methods:
-/// - `new(u8, &'static str, Option<Box<Weapon>>)` 
-/// function is used to be a static constructor of 
+/// - `new(u8, &'static str, Option<Box<Weapon>>)`
+/// function is used to be a static constructor of
 /// `Character` that return the struct initialized.
-
-
+/// - `new_no_weapon(u8, &'static str)` is simply the
+/// same function as new, but sets weapon to None
 /// - `attack(&mut self, &mut self)` function removes
 /// other's life based on self damage and return self
 /// for method chaining.
@@ -38,14 +38,20 @@ impl Character {
     }
 
     pub fn new_no_weapon(life: u8, name: &'static str) -> Self {
-        Character { life, name, weapon: None }
+        Character {
+            life,
+            name,
+            weapon: None,
+        }
     }
 
     /// Attacks another character, reducing their `life` by
     /// self.damage. Returns `self` to allow method chaining.
     pub fn attack(&mut self, other: &mut Self) -> &mut Self {
         if let Some(w) = &mut self.weapon {
-            w.if_not_broken(|damage: u8| other.life -= damage);
+            other.life = w
+                .if_not_broken(|damage: u8| other.life - damage)
+                .unwrap_or(0);
             w.consume();
         }
         self
