@@ -1,5 +1,3 @@
-use std::f64::consts::E;
-
 use crate::items::Item;
 
 /// # Character
@@ -47,12 +45,20 @@ impl Character {
         }
     }
 
-    pub fn use_item(&mut self, other: Option<&mut Character>) -> () {
-        let mut item: Option<Box<dyn Item>> = self.item.take(); // pop item and replace to None
-        if let Some(i) = &mut item {
-            i.apply(other.unwrap_or(self));
+    pub fn use_item_on(&mut self, other: &mut Character) -> &mut Self {
+        if let Some(mut i) = self.item.take() {
+            i.apply(self);
+            self.item = Some(i);
         }
-        self.item = item;
+        self
+    }
+
+    pub fn use_item_on_self(&mut self) -> &mut Self {
+        if let Some(mut item) = self.item.take() {
+            item.apply(self);
+            self.item = Some(item);
+        }
+        self
     }
 
     /// Returns the character's name.
@@ -86,11 +92,11 @@ mod tests {
         let p = Box::new(Potion::new("testp", 50));
 
         let mut c: Character = Character::new_no_weapon("testc", 100);
-        c.set_item(Some(p)).use_item(None);
+        c.set_item(Some(p)).use_item_on_self();
 
         assert_eq!(c.life, 150);
 
-        c.set_item(Some(w)).use_item(None);
+        c.set_item(Some(w)).use_item_on_self();
 
         assert_eq!(c.life, 140);
     }
